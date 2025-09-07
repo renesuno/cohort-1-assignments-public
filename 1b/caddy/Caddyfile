@@ -29,7 +29,7 @@
 :80 {
     import cors
     
-    handle /deployment.json {
+    handle /deployment* {
         reverse_proxy sc-deployment-server:80
     }
     
