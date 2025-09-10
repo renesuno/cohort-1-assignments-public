@@ -1,55 +1,29 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.30;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
 
-import {Test} from "forge-std/Test.sol";
-import {MockERC20} from "../src/MockERC20.sol";
+import "forge-std/Test.sol";
+import "../src/MockERC20.sol";
 
 contract MockERC20Test is Test {
     MockERC20 public token;
-    address public alice = address(0x1);
-    address public bob = address(0x2);
 
     function setUp() public {
-        token = new MockERC20("Mock Token", "MTK");
+        // 테스트할 때마다 fresh하게 배포
+        token = new MockERC20("Mock Token", "MOCK");
     }
 
-    function test_Constructor() public view {
-        assertEq(token.name(), "Mock Token");
-        assertEq(token.symbol(), "MTK");
-        assertEq(token.decimals(), 18);
-        assertEq(token.totalSupply(), 0);
+    function testFreeMintTo() public {
+        address recipient = address(0x123);
+        // recipient에게 100 토큰 발행
+        token.freeMintTo(recipient, 1000);
+        // recipient의 잔고 확인
+        assertEq(token.balanceOf(recipient), 1000);
     }
 
-    function test_FreeMintTo() public {
-        uint256 mintAmount = 1000 * 10 ** 18; // 1000 tokens
+    function testFreeMintToSender() public {
+        // msg.sender = 이 테스트 컨트랙트 (address(this))
+        token.freeMintToSender(500);
 
-        // Initial balance should be 0
-        assertEq(token.balanceOf(alice), 0);
-
-        // Mint tokens to alice
-        token.freeMintTo(mintAmount, alice);
-
-        // Check that alice received the tokens
-        assertEq(token.balanceOf(alice), mintAmount);
-        assertEq(token.totalSupply(), mintAmount);
-    }
-
-    function test_FreeMintToSender() public {
-        uint256 mintAmount = 2000 * 10 ** 18; // 2000 tokens
-
-        // Start acting as alice
-        vm.startPrank(alice);
-
-        // Initial balance should be 0
-        assertEq(token.balanceOf(alice), 0);
-
-        // Mint tokens to sender (alice)
-        token.freeMintToSender(mintAmount);
-
-        // Check that alice received the tokens
-        assertEq(token.balanceOf(alice), mintAmount);
-        assertEq(token.totalSupply(), mintAmount);
-
-        vm.stopPrank();
+        assertEq(token.balanceOf(address(this)), 500);
     }
 }

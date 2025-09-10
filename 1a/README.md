@@ -1,29 +1,66 @@
-# MiniAMM
+## Foundry
 
-Install [foundry](https://getfoundry.sh/forge/overview/) and initialize the forge workspace.
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-Go to [the faucet](https://faucet.flare.network/coston2) and input your EVM wallet address to get C2FLR testnet token. Use this wallet to deploy your contract.
+Foundry consists of:
 
-## Requirements
+- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-`MiniAMM.sol` has two features available to users:
-1. Add liquidity: users supply two tokens at the same time. Essentially, this function transfers a pair of tokens into the contract, thereby increasing the $k$. However, the ratio of $x$ to $y$ must stay constant, except for the first time the liquidity is supplied.
-1. Swap: users can swap $x$ amount of token into $y$ amount of token, keeping $k$ constant. Essentially, this transfers $x$ amount of token into the contract, and transfers out $y$ amount of token to the user, while keeping $k$ constant.
+## Documentation
 
-To be able to test MiniAMM, you need to deploy two different mock ERC-20 tokens:
-1. Complete MockERC20 contract in `MockERC20.sol`. `freeMintTo` must mint `amount` tokens to `to`. `freeMintToSender` mints `amount` tokens to `msg.sender`. These functions must be callable by any address so that minting is available for anyone.
+https://book.getfoundry.sh/
 
-You can test if your contracts are working correctly by running `forge test`. **Your goal is to make all tests pass without hardcoding the answers into your contracts.**
+## Usage
 
-After that, **deploy and verify** two different `MockERC20` contracts with arbitrary names and symbols you choose, as well as `MiniAMM` contract to [Flare Coston2 Testnet](https://coston2.testnet.flarescan.com/). **To verify** means your contract code will be visible on a blockchain explorer. You will need to use [the faucet](https://faucet.flare.network/coston2) to fund your deployer account.
+### Build
 
-`MiniAMM` contract should take those two `MockERC20` contract addresses as `tokenX` and `tokenY` respectively.
+```shell
+$ forge build
+```
 
-### Deliverables
+### Test
 
-Once you are done with everything, you would be left with:
-- A complete `MiniAMM.sol` implementation
-- A complete `MockERC20.sol` implementation
-- A complete `MiniAMM.s.sol` implementation
-- Deployment addresses of `MiniAMM`, and two `MockERC20` contracts on https://coston2.testnet.flarescan.com/
-- All tests under `test` folder passing with `forge test`
+```shell
+$ forge test
+```
+
+### Format
+
+```shell
+$ forge fmt
+```
+
+### Gas Snapshots
+
+```shell
+$ forge snapshot
+```
+
+### Anvil
+
+```shell
+$ anvil
+```
+
+### Deploy
+
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
+
+### Cast
+
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
