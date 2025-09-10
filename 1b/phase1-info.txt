@@ -1,0 +1,18 @@
+=== Phase 1 완료 정보 ===
+
+도메인: unreligious-oakley-unwhimperingly.ngrok-free.app
+계정 주소: 0x556CA0FD74b31B9a2B38aB3f93a07341282e7b0f
+계정 잔액: 100 ETH
+
+접근 가능한 엔드포인트:
+- RPC: https://unreligious-oakley-unwhimperingly.ngrok-free.app/
+- 배포정보: https://unreligious-oakley-unwhimperingly.ngrok-free.app/deployment.json
+
+내일 재시작 방법:
+1. ./restart-phase1.sh 실행
+2. 새 터미널에서 ngrok 시작
+3. Phase 2 작업 시작
+
+Phase 2 목표:
+- Blockscout Explorer 추가
+- Graph Stack 추가

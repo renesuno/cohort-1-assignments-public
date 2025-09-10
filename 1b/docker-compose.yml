@@ -34,9 +34,27 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./sc-deployment-server/Caddyfile:/etc/caddy/Caddyfile
+      #- ./sc-deployment-server/Caddyfile:/etc/caddy/Caddyfile
       # serve deployment.json
       - ./sc-deployer:/usr/share/caddy
+    command: |
+      sh -c "
+      mkdir -p /etc/caddy
+      cat > /etc/caddy/Caddyfile << 'EOF'
+      :80 {
+          header {
+              Access-Control-Allow-Origin *
+              Access-Control-Allow-Methods \"GET, OPTIONS\"
+              Access-Control-Allow-Headers \"Content-Type\"
+              Content-Type \"application/json\"
+          }
+          root * /usr/share/caddy
+          rewrite * /deployment.json
+          file_server
+      }
+      EOF
+      caddy run --config /etc/caddy/Caddyfile
+      "
     depends_on:
       - sc-deployer
     networks:
@@ -87,15 +105,95 @@ services:
       - geth
     networks:
       - geth-network
-  # graph-ipfs:
-  # graph-postgres:
-  # graph-redis:
-  # graph-node:
 
-  # blockscout: should be another docker-compose.yml file from https://github.com/blockscout/blockscout/tree/master/docker-compose. Don't create a container in this file.
+  graph-ipfs:
+    image: ipfs/kubo:latest
+    container_name: graph-ipfs
+    ports:
+      - "5001:5001" # API
+      - "4001:4001" # Gateway
+    volumes:
+      - graph-ipfs-data:/data/ipfs
+    networks:
+      - geth-network
+
+  graph-postgres:
+    image: postgres:17
+    container_name: graph-postgres
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_DB: graph-node
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - graph-postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - geth-network
+
+  graph-redis:
+    image: redis:7-alpine
+    container_name: graph-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - graph-redis-data:/data
+    networks:
+      - geth-network
+
+  graph-node:
+    image: graphprotocol/graph-node:latest
+    container_name: graph-node
+    ports:
+      - "8000:8000" # GraphQL HTTP
+      - "8001:8001" # GraphQL WebSocket
+      - "8020:8020" # JSON-RPC
+      - "8030:8030" # Subgraph indexing status
+      - "8040:8040" # Prometheus metrics
+    depends_on:
+      - graph-ipfs
+      - graph-postgres
+      - graph-redis
+      - geth
+    environment:
+      postgres_host: graph-postgres
+      postgres_user: graph-node
+      postgres_pass: let-me-in
+      postgres_db: graph-node
+      ipfs: "graph-ipfs:5001"
+      ethereum: "local:http://geth:8545"
+      GRAPH_LOG: info
+      RUST_LOG: info
+    networks:
+      - geth-network
+
+  # ngrok:
+  #   image: ngrok/ngrok:latest
+  #   container_name: ngrok
+  #   #ports:
+  #   #  - "4040:4040" # ngrok 웹 인터페이스
+  #   environment:
+  #     NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+  #   command: http caddy:80
+  #   depends_on:
+  #     - caddy
+  #   networks:
+  #     - geth-network
+
+  # Blockscout: should be another docker-compose.yml file
+  # from https://github.com/blockscout/blockscout/tree/master/docker-compose
+  # Don't create a container in this file.
 
 volumes:
   geth-data:
+  graph-ipfs-data:
+  graph-postgres-data:
+  graph-redis-data:
+  blockscout-db-data:
+  db-data:
+  stats-db-data:
 
 networks:
   geth-network:
