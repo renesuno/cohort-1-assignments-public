@@ -2,6 +2,7 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+evm_version = "paris"   # PUSH0 비활성화
 remappings = [
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"
 ]
