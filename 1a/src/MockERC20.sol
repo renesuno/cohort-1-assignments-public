@@ -1,25 +1,17 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.30;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {IMockERC20} from "./IMockERC20.sol";
 
-contract MockERC20 is ERC20 {
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
+// Add as many variables or functions as you would like
+// for the implementation. The goal is to pass `forge test`.
+contract MockERC20 is ERC20, IMockERC20 {
+    constructor(string memory name_, string memory symbol_) ERC20(name_, symbol_) {}
 
-    /**
-     * @dev 지정된 주소로 토큰을 무료로 민팅
-     * @param to 토큰을 받을 주소
-     * @param amount 민팅할 토큰 수량
-     */
-    function freeMintTo(address to, uint256 amount) external {
-        _mint(to, amount);
-    }
+    // Implement
+    function freeMintTo(uint256 amount, address to) external {}
 
-    /**
-     * @dev 호출자(msg.sender)에게 토큰을 무료로 민팅
-     * @param amount 민팅할 토큰 수량
-     */
-    function freeMintToSender(uint256 amount) external {
-        _mint(msg.sender, amount);
-    }
+    // Implement
+    function freeMintToSender(uint256 amount) external {}
 }

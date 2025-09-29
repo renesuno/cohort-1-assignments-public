@@ -8,6 +8,3 @@ libs = ["lib"]
 remappings = [
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"
 ]
-
-[rpc_endpoints]
-coston2 = "${RPC_URL}"
