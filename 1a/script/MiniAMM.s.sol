@@ -20,9 +20,12 @@ contract MiniAMMScript is Script {
         vm.startBroadcast(); // 실제 블록체인에 배포 트랜잭션을 전송하기 시작
 
         // Deploy mock ERC20 tokens
-        // 실제 코드에서는 token0, token1 배포가 여기에 들어가야 함
+        // token0, token1 배포가 여기에 들어가야 함
+        token0 = new MockERC20("Token A", "TKA");
+        token1 = new MockERC20("Token B", "TKB");
+
         // Deploy MiniAMM with the tokens
-        // 실제 코드에서는 MiniAMM를 token0, token1 주소와 함께 배포
+        MiniAMM amm = new MiniAMM(address(token0), address(token1)); // MiniAMM를 token0, token1 주소와 함께 배포
 
         vm.stopBroadcast(); // 블록체인으로의 트랜잭션 전송 종료
     }

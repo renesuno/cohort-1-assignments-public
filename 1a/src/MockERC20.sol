@@ -15,14 +15,17 @@ contract MockERC20 is ERC20, IMockERC20 {
     ) ERC20(name_, symbol_) {} // 컨트랙터 생성자, // ERC20 이름과 심볼을 초기화
 
     // Implement
-    function freeMintTo(uint256 amount, address to) external {}
+    function freeMintTo(uint256 amount, address to) external {
+        _mint(to, amount); // IMockERC20 인터페이스 함수 구현
+    }
 
-    // IMockERC20 인터페이스 함수 구현
     // 특정 주소(to)에게 토큰(amount) 발행
     // 테스트 시 유동성 공급이나 잔액 세팅 용도로 사용
 
     // Implement
-    function freeMintToSender(uint256 amount) external {} // IMockERC20 인터페이스 함수 구현
+    function freeMintToSender(uint256 amount) external {
+        _mint(msg.sender, amount); // IMockERC20 인터페이스 함수 구현
+    }
     // 호출자(sender)에게 토큰(amount) 발행
     // 테스트 시 편리하게 자기 자신에게 토큰 발행
 }
