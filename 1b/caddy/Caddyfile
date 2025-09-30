@@ -12,7 +12,7 @@
             Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
             Access-Control-Allow-Headers *
             Access-Control-Max-Age "3600"
-            defer # turn on defer on your header directive to make sure the new header values are set after proxying
+            defer
         }
         respond "" 204
     }
@@ -28,17 +28,32 @@
 
 :80 {
     import cors
-    
-    handle /deployment.json {
+
+    # Smart contracts deployment server
+    handle /deployment* {
         reverse_proxy sc-deployment-server:80
     }
-    
+
+    # Blockscout explorer
+    handle /explorer* {
+        uri strip_prefix /explorer
+        reverse_proxy host.docker.internal:8082
+    }
+
+    # Graph node GraphQL playground
+    handle /graph-playground* {
+        uri strip_prefix /graph-playground
+        reverse_proxy graph-node:8000
+    }
+
+    # EVM Node RPC service
     handle /rpc* {
         uri strip_prefix /rpc
         reverse_proxy geth:8545
     }
-    
+
+    # Default fallback
     handle {
-        reverse_proxy geth:8545
+        respond "Welcome to the local blockchain environment" 200
     }
 }

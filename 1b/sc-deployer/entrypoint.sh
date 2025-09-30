@@ -18,27 +18,20 @@ rm -rf /workspace/cohort-1-assignments-public
 
 cd /workspace
 
-echo "📥 Cloning repository..."
-git clone https://github.com/9oelm/cohort-1-assignments-public.git
-cd cohort-1-assignments-public
+echo "📥 Using local assignment 1A..."
+# Use mounted volume directly (already built)
+cd /assignment1a
 
-# Navigate to the 1a directory
-cd 1a
+# Disable git discovery error
+export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
-# Install dependencies
-echo "📦 Installing dependencies..."
-forge install
-
-# Build the project
-echo "🔨 Building project..."
-forge build
-
-# Deploy the contracts
+#  Deploy the contracts
 echo "🚀 Deploying MiniAMM contracts..."
 forge script script/MiniAMM.s.sol:MiniAMMScript \
     --rpc-url http://geth:8545 \
     --private-key be44593f36ac74d23ed0e80569b672ac08fa963ede14b63a967d92739b0c8659 \
-    --broadcast
+    --broadcast \
+    --skip-simulation
 
 echo "✅ Deployment completed!"
 echo ""

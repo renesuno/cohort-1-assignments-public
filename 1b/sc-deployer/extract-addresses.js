@@ -3,7 +3,7 @@
 const fs = require('fs');
 
 // Path to the broadcast artifact (inside container)
-const broadcastPath = './cohort-1-assignments-public/1a/broadcast/MiniAMM.s.sol/1337/run-latest.json';
+const broadcastPath = '/assignment1a/broadcast/MiniAMM.s.sol/1337/run-latest.json';
 
 try {
   // Read the broadcast artifact

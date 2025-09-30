@@ -1,0 +1,68 @@
+// Title: Foundry용 배포 스크립트
+
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.30; // Solidity 컴파일러 버전 지정, 라이선스는 없음
+
+import {Script} from "forge-std/Script.sol"; // Foundry에서 제공하는 Script 모듈을 가져옴, 배포 스크립트 작성에 사용
+import {MiniAMM} from "../src/MiniAMM.sol"; // MiniAMM 스마트 계약을 가져옴, 배포 및 테스트에 사용
+import {MockERC20} from "../src/MockERC20.sol"; // MockERC20 스마트 계약을 가져옴, 테스트용 ERC20 토큰 배포에 사용
+
+// Foundry 배포용 스크립트 컨트랙트 정의
+contract MiniAMMScript is Script {
+    MiniAMM public miniAMM; // 배포될 MiniAMM 컨트랙트 인스턴스를 저장할 변수
+    MockERC20 public token0; // 배포될 첫 번째 MockERC20 토큰 인스턴스
+    MockERC20 public token1; // 배포될 두 번째 MockERC20 토큰 인스턴스
+
+    function setUp() public {} // Foundry에서 테스트나 스크립트 실행 전 초기 설정 함수, 여기서는 비워둠
+
+    function run() public {
+        // Foundry 스크립트 실행 시 호출되는 '메인' 함수
+        vm.startBroadcast(); // 실제 블록체인에 배포 트랜잭션을 전송하기 시작
+
+        // Deploy mock ERC20 tokens
+        // token0, token1 배포가 여기에 들어가야 함
+        token0 = new MockERC20("Token A", "TKA");
+        token1 = new MockERC20("Token B", "TKB");
+
+        // Deploy MiniAMM with the tokens
+        MiniAMM amm = new MiniAMM(address(token0), address(token1)); // MiniAMM를 token0, token1 주소와 함께 배포
+
+        vm.stopBroadcast(); // 블록체인으로의 트랜잭션 전송 종료
+    }
+}
+
+// ==========================
+
+// Chain 114
+
+// Estimated gas price: 87.5 gwei
+
+// Estimated total gas used for script: 3910136
+
+// Estimated amount required: 0.3421369 C2FLR
+
+// ==========================
+
+// ##### flare-coston2
+// ✅  [Success] Hash: 0x8aca8f37dbbb4d436b79f6f4dffcdebc9af83a4f1afe69cf22138e9f695eacb5
+// Contract Address: 0xCd13191Ab86337bD1EE11926af15664D5dA55927
+// Block: 22415514
+// Paid: 0.0615736875 C2FLR (985179 gas * 62.5 gwei)
+
+// ##### flare-coston2
+// ✅  [Success] Hash: 0xe8235a5c511eaa263e47f61a6625812656fbe03e7ffc9021e5b2f60b7a186d86
+// Contract Address: 0x7601C71A2A614b248965513E8fbf6cc3407fCdb1
+// Block: 22415516
+// Paid: 0.0615736875 C2FLR (985179 gas * 62.5 gwei)
+
+// ##### flare-coston2
+// ✅  [Success] Hash: 0x839beff1805a243dffa72e985f4f1716b4d8d31b0fb60d678582be8c9bb4605d
+// Contract Address: 0x35317a2E11d6f4d8A400870bd2FF2783e88995c5
+// Block: 22415516
+// Paid: 0.06490525 C2FLR (1038484 gas * 62.5 gwei)
+
+// ✅ Sequence #1 on flare-coston2 | Total Paid: 0.188052625 C2FLR (3008842 gas * avg 62.5 gwei)
+
+// ==========================
+
+// ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
