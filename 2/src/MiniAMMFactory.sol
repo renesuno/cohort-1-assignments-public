@@ -9,18 +9,51 @@ import {MiniAMM} from "./MiniAMM.sol";
 contract MiniAMMFactory is IMiniAMMFactory {
     mapping(address => mapping(address => address)) public getPair;
     address[] public allPairs;
-    
-    event PairCreated(address indexed token0, address indexed token1, address pair, uint256 pairNumber);
-    
+
+    event PairCreated(
+        address indexed token0,
+        address indexed token1,
+        address pair,
+        uint256 pairNumber
+    );
+
     constructor() {}
-    
+
     // implement
     function allPairsLength() external view returns (uint256) {
-        return 0;
+        return allPairs.length;
     }
-    
+
     // implement
-    function createPair(address tokenA, address tokenB) external returns (address pair) {
-        return address(0);
+    function createPair(
+        address tokenA,
+        address tokenB
+    ) external returns (address pair) {
+        // Validation checks
+        require(tokenA != tokenB, "Identical addresses");
+        require(tokenA != address(0) && tokenB != address(0), "Zero address");
+
+        // Sort tokens to ensure consistent ordering
+        (address token0, address token1) = tokenA < tokenB
+            ? (tokenA, tokenB)
+            : (tokenB, tokenA);
+
+        // Check if pair already exists
+        require(getPair[token0][token1] == address(0), "Pair exists");
+
+        // Deploy new MiniAMM contract
+        pair = address(new MiniAMM(token0, token1));
+
+        // Store pair in both directions of the mapping
+        getPair[token0][token1] = pair;
+        getPair[token1][token0] = pair;
+
+        // Add to array
+        allPairs.push(pair);
+
+        // Emit event with pair number (1-indexed)
+        emit PairCreated(token0, token1, pair, allPairs.length);
+
+        return pair;
     }
 }

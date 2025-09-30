@@ -1,10 +1,11 @@
 [profile.default]
 src = "src"
 out = "out"
-libs = ["lib"]
-
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
-
+libs = ["lib", "../1a/lib"]
+evm_version = "paris"   # PUSH0 비활성화
 remappings = [
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"
 ]
+
+[rpc_endpoints]
+coston2 = "${RPC_URL}"
